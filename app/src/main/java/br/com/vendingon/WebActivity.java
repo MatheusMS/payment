@@ -1,10 +1,12 @@
 package br.com.vendingon;
 
-import android.Manifest;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-import permissions.dispatcher.NeedsPermission;
+import java.util.List;
+
+import stone.application.StoneStart;
+import stone.user.UserModel;
 
 public class WebActivity extends AppCompatActivity implements WebContract.View {
 
@@ -16,19 +18,30 @@ public class WebActivity extends AppCompatActivity implements WebContract.View {
         setContentView(R.layout.activity_web);
 
         mPresenter = new WebPresenter(this);
-        initiateApp();
-        teste();
+        initiateStoneSDK();
     }
 
-    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void initiateApp() {
+    private void initiateStoneSDK() {
+        /**
+         * Este deve ser, obrigatoriamente, o primeiro metodo
+         * a ser chamado. E um metodo que trabalha com sessao.
+         */
+        List<UserModel> user = StoneStart.init(this);
 
+        // se retornar nulo, voce provavelmente nao ativou a SDK
+        // ou as informacoes da Stone SDK foram excluidas
+        if (user != null) {
+            /* caso ja tenha as informacoes da SDK e chamado o ActiveApplicationProvider anteriormente
+               sua aplicacao podera seguir o fluxo normal */
+
+        }
+        teste();
     }
 
     private void teste() {
         mPresenter.setEnvironment("STG");
         mPresenter.activeApplication("748892689");
-        mPresenter.connectPinPad("MOBIPIN-04903158", "D4:F5:13:5D:A2:97");
-        mPresenter.sendTransaction();
+//        mPresenter.connectPinPad("MOBIPIN-04903158", "D4:F5:13:5D:A2:97");
+//        mPresenter.sendTransaction();
     }
 }
