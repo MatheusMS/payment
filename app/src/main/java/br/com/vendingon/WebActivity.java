@@ -1,12 +1,16 @@
 package br.com.vendingon;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Toast;
 
-import java.util.List;
+import com.google.gson.Gson;
 
-import stone.application.StoneStart;
-import stone.user.UserModel;
+import br.com.vendingon.entity.PaymentEntity;
+import br.com.vendingon.usecase.StoneUseCase;
+import br.com.vendingon.usecase.StoneUseCaseImpl;
 
 public class WebActivity extends AppCompatActivity implements WebContract.View {
 
@@ -17,31 +21,36 @@ public class WebActivity extends AppCompatActivity implements WebContract.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
 
-        mPresenter = new WebPresenter(this);
-        initiateStoneSDK();
+        StoneUseCase stoneUseCase = new StoneUseCaseImpl(this);
+        mPresenter = new WebPresenter(this, stoneUseCase);
     }
 
-    private void initiateStoneSDK() {
-        /**
-         * Este deve ser, obrigatoriamente, o primeiro metodo
-         * a ser chamado. E um metodo que trabalha com sessao.
-         */
-        List<UserModel> user = StoneStart.init(this);
-
-        // se retornar nulo, voce provavelmente nao ativou a SDK
-        // ou as informacoes da Stone SDK foram excluidas
-        if (user != null) {
-            /* caso ja tenha as informacoes da SDK e chamado o ActiveApplicationProvider anteriormente
-               sua aplicacao podera seguir o fluxo normal */
-
-        }
-        teste();
+    public void onClickTransaction(View view) {
+        mPresenter.setPayment(getPayment());
+        mPresenter.startTransaction();
     }
 
-    private void teste() {
-        mPresenter.setEnvironment("STG");
-        mPresenter.activeApplication("748892689");
-//        mPresenter.connectPinPad("MOBIPIN-04903158", "D4:F5:13:5D:A2:97");
-//        mPresenter.sendTransaction();
+    private PaymentEntity getPayment() {
+        String jsonPayment = "{\n" +
+                "\t\"environment\": \"STAGING\",\n" +
+                "\t\"stoneCode\": \"748892689\",\n" +
+                "\t\"pinPadName\": \"MOBIPIN-04903158\",\n" +
+                "\t\"pinPadMacAddress\": \"D4:F5:13:5D:A2:97\",\n" +
+                "\t\"value\": \"1,00\",\n" +
+                "\t\"qtdInstalment\": 1,\n" +
+                "\t\"debit\": true\n" +
+                "}";
+        PaymentEntity payment = new Gson().fromJson(jsonPayment, PaymentEntity.class);
+        return payment;
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }
