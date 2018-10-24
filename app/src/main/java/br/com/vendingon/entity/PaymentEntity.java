@@ -65,4 +65,16 @@ public class PaymentEntity {
     public void setDebit(boolean debit) {
         this.debit = debit;
     }
+
+    public static String getJsonMock() {
+        return "{\n" +
+                "\t\"environment\": \"STAGING\",\n" +
+                "\t\"stoneCode\": \"748892689\",\n" +
+                "\t\"pinPadName\": \"MOBIPIN-04903158\",\n" +
+                "\t\"pinPadMacAddress\": \"D4:F5:13:5D:A2:97\",\n" +
+                "\t\"value\": \"1,00\",\n" +
+                "\t\"qtdInstalment\": 1,\n" +
+                "\t\"debit\": true\n" +
+                "}";
+    }
 }

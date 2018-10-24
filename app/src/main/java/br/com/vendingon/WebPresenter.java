@@ -88,6 +88,7 @@ public class WebPresenter implements WebContract.Presenter {
                     @Override
                     public void onSucess() {
                         mView.showToast("Transação realizada com sucesso");
+                        mView.transactionSuccessfully();
                     }
 
                     @Override

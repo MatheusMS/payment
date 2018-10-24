@@ -10,6 +10,7 @@ public interface WebContract {
     interface View {
         Context getContext();
         void showToast(String message);
+        void transactionSuccessfully();
     }
 
     interface Presenter {
